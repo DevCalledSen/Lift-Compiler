@@ -91,3 +91,18 @@ Current Lift Compiler version: v0.1.0
   input(name);
   outputln("Hello, ", name);
   ```
+
+  * **2.6 Arithmetics and Logic**
+  > *Lift arithmetics consists of:*
+  * \+
+  * \-
+  * \*
+  * /
+  * //
+  > *Lift basic logic consists of:*
+  * ==
+  * !=
+  * \>
+  * <
+  * \>=
+  * <=
