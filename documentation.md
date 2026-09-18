@@ -288,3 +288,362 @@ var<string> lower = greeting.toLower();           --- Converts to lowercase ---
 var<bool> contains = greeting.contains("Lift");   --- Returns true ---
 var<list<string>> parts = greeting.split(", ");   --- Returns ["Hello", "Lift!"] ---
 ```
+
+---
+
+## 4. Advanced Features
+
+### 4.1 Custom Types / Structs
+
+Structs allow user-defined grouping of data and behavior, partitioned into `public:` and `private:` access specifiers:
+
+```lift
+struct Player {
+public:
+    var<string> name;
+    var<int> health = 100;
+
+    fn<void> takeDamage(var<int> amount) {
+        this.health -= amount;
+        if this.health < 0 {
+            this.health = 0;
+        }
+    }
+
+    fn<int> getHealth() {
+        return this.health;
+    }
+
+private:
+    var<int> id;
+}
+
+--- Usage ---
+var<Player> p1;
+p1.name = "Hero";
+p1.takeDamage(25);
+outputln(p1.name, " HP: ", p1.getHealth());
+```
+
+### 4.2 Enums
+
+Enums represent custom discrete sets of named constants. Lift supports standard un-scoped enums as well as scoped `enum class` declarations. Accessing members uses dot syntax (`.`) in both formats:
+
+```lift
+--- Standard C++-style enum ---
+enum State {
+    IDLE,
+    RUNNING,
+    PAUSED
+}
+
+--- Scoped enum class ---
+enum class Direction {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST
+}
+
+--- Usage ---
+var<State> currentState = State.IDLE;
+var<Direction> dir = Direction.NORTH;
+```
+
+### 4.3 Generics
+
+Generics allow functions and data structures to operate on parametrized types:
+
+```lift
+--- Generic Struct ---
+struct Container<T> {
+public:
+    var<T> item;
+
+    fn<T> getItem() {
+        return this.item;
+    }
+}
+
+--- Generic Function ---
+fn<T> identity<T>(var<T> val) {
+    return val;
+}
+
+--- Usage ---
+var<Container<int>> box;
+box.item = 42;
+outputln(identity<string>("Generic test"));
+```
+
+### 4.4 Advanced Collections
+
+In addition to standard lists, Lift offers built-in key-value maps and unique sets:
+
+```lift
+--- Hash Map / Dictionary ---
+map<string, int> scores;
+scores.set("Alice", 100);
+scores.set("Bob", 85);
+
+if scores.has("Alice") {
+    outputln("Alice's score: ", scores.get("Alice"));
+}
+
+--- Unique Set ---
+set<int> uniqueIds;
+uniqueIds.add(10);
+uniqueIds.add(10); --- Ignored as duplicate ---
+outputln("Unique count: ", uniqueIds.length());
+```
+
+### 4.5 Function Overloading
+
+Functions with the same name can be overloaded provided their parameter signatures differ:
+
+```lift
+fn<int> calculate(var<int> a, var<int> b) {
+    return a + b;
+}
+
+fn<float> calculate(var<float> a, var<float> b) {
+    return a + b;
+}
+
+fn<int> calculate(var<int> a, var<int> b, var<int> c) {
+    return a + b + c;
+}
+```
+
+### 4.6 Function References / Callbacks
+
+Functions can be passed as arguments or assigned to typed callback variables:
+
+```lift
+fn<int> multiplyByTwo(var<int> n) {
+    return n * 2;
+}
+
+fn<void> processNumber(var<int> val, fn<int(int)> callback) {
+    var<int> result = callback(val);
+    outputln("Processed result: ", result);
+}
+
+fn<void> main() {
+    processNumber(5, multiplyByTwo);
+}
+```
+
+### 4.7 Modules & Namespaces
+
+Namespaces encapsulate declarations to prevent symbol collisions across large projects. Accessing members uses dot syntax (`.`):
+
+```lift
+namespace Graphics {
+    var<int> SCREEN_WIDTH = 1920;
+    var<int> SCREEN_HEIGHT = 1080;
+
+    fn<void> render() {
+        outputln("Rendering frame...");
+    }
+}
+
+--- Usage ---
+Graphics.render();
+outputln("Width: ", Graphics.SCREEN_WIDTH);
+```
+
+### 4.8 Error Handling
+
+Lift uses structured `try / catch / throw` constructs for exceptional flow control:
+
+```lift
+fn<float> divide(var<float> a, var<float> b) {
+    if b == 0.0 {
+        throw "DivisionByZeroError: Cannot divide by zero";
+    }
+    return a / b;
+}
+
+fn<void> main() {
+    try {
+        var<float> res = divide(10.0, 0.0);
+    } catch (var<string> err) {
+        outputln("An exception was caught: ", err);
+    }
+}
+```
+
+### 4.9 Compile-Time Features
+
+Lift supports compile-time code evaluation and compile-time constant expressions via `const` and `comptime`:
+
+```lift
+--- Compile-time constant ---
+const var<int> MAX_BUFFER_SIZE = 1024;
+
+--- Code evaluated during compilation ---
+comptime {
+    outputln("Building Lift binaries for platform target...");
+}
+```
+
+---
+
+## 5. Low-Level Programming
+
+### 5.1 Memory Architecture
+
+Lift offers direct control over system memory for performance-critical systems. Memory addresses are represented as typed pointer locations or raw address offsets.
+
+### 5.2 References
+
+References create alias bindings to existing variable locations using the `&` modifier in type declarations:
+
+```lift
+fn<void> increment(var<int>& num) {
+    num += 1;
+}
+
+fn<void> main() {
+    var<int> val = 10;
+    increment(val);
+    outputln("Value after increment: ", val); --- Output: 11 ---
+}
+```
+
+### 5.3 Pointers
+
+Pointers store physical memory addresses using the `ptr<type>` notation.
+* Initialize a null pointer using `NULL`.
+* Use `ptr<void>` as a generic pointer type that can hold an address of any data type.
+
+```lift
+var<int> target = 42;
+ptr<int> p = &target; --- Address-of operator ---
+
+outputln("Value via pointer: ", *p); --- Dereference operator ---
+
+*p = 100; --- Direct memory modification ---
+outputln("Updated target: ", target); --- Output: 100 ---
+
+--- Null pointer initialization ---
+ptr<int> iptr = NULL;
+
+--- Generic pointer to any type ---
+ptr<void> genericPtr = p;
+```
+
+### 5.4 Pointer Arithmetic
+
+Pointer arithmetic moves memory references by element size offsets:
+
+```lift
+ptr<int> buffer = getMemoryBuffer();
+
+--- Move pointer forward by 2 element width offsets ---
+ptr<int> offsetPtr = buffer + 2;
+
+--- Calculate offset difference ---
+var<int> count = offsetPtr - buffer;
+```
+
+### 5.5 Manual Memory Allocation
+
+Heap memory can be explicitly reserved and released using `allocate<T>()` and `deallocate()`:
+
+```lift
+--- Allocate block for 5 integer elements on heap ---
+ptr<int> heapArray = allocate<int>(5);
+
+heapArray[0] = 10;
+heapArray[1] = 20;
+
+--- Always free manual dynamic allocations ---
+deallocate(heapArray);
+```
+
+### 5.6 Raw Memory Access
+
+Generic raw byte operations allow direct byte manipulation via `ptr<void>`:
+
+```lift
+ptr<void> rawChunk = allocateRaw(64); --- Reserve 64 raw bytes ---
+
+--- Copy memory bytes from source to target ---
+memcopy(destRaw, rawChunk, 64);
+
+--- Fill memory region with zero bytes ---
+memset(rawChunk, 0, 64);
+
+freeRaw(rawChunk);
+```
+
+### 5.7 Stack and Heap
+
+* **Stack Memory:** Fast, automatically managed, fixed-size frames for local variables and function scope lifetime.
+* **Heap Memory:** Dynamically allocated memory that persists until explicitly released or cleared by manual/garbage-managed scope lifecycle.
+
+```lift
+fn<void> memoryDemo() {
+    var<int> stackVar = 5; --- Stack allocation ---
+    ptr<int> heapVar = allocate<int>(1); --- Heap allocation ---
+    *heapVar = 50;
+
+    deallocate(heapVar);
+}
+```
+
+### 5.8 Bitwise Operations
+
+Lift supports standard low-level bit manipulation operators:
+
+| Operator | Operation | Description |
+|---|---|---|
+| `&` | Bitwise AND | Compares corresponding bits |
+| `\|` | Bitwise OR | Sets bit if either bit is 1 |
+| `^` | Bitwise XOR | Sets bit if exactly one bit is 1 |
+| `~` | Bitwise NOT | Inverts all bits |
+| `<<` | Left Shift | Shifts bits left (multiplies by $2^n$) |
+| `>>` | Right Shift | Shifts bits right (divides by $2^n$) |
+
+```lift
+var<uint> flags = 0b00001100;
+var<uint> mask  = 0b00000100;
+
+var<uint> active = flags & mask;         --- Bitwise AND ---
+var<uint> combined = flags | 0b00010000; --- Bitwise OR ---
+var<uint> shifted = flags << 2;          --- Bitwise Left Shift ---
+```
+
+### 5.9 Inline Assembly
+
+Low-level target platform instructions can be written directly using `asm` blocks:
+
+```lift
+fn<uint> readCycleCount() {
+    var<uint> cycles = 0;
+    asm {
+        rdtsc
+        mov cycles, eax
+    }
+    return cycles;
+}
+```
+
+### 5.10 C / Native Interoperability
+
+Foreign native functions compiled from C/C++ libraries can be declared using `extern "C"`:
+
+```lift
+--- Bind external C runtime functions ---
+extern "C" {
+    fn<int> puts(ptr<char> str);
+    fn<int> abs(var<int> value);
+}
+
+fn<void> main() {
+    abs(-15);
+    puts("Calling C library directly from Lift!");
+}
+```
