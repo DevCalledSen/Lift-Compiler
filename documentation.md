@@ -2,7 +2,9 @@
 
 > **Simple to learn. Powerful when you need it.**
 
-## **Compiler Version:** `v0.1.0`
+---
+**Compiler Version:** `v0.1.0`
+---
 
 ## 1. Setup & Environment
 
@@ -59,18 +61,19 @@ The primary source file compiled during execution:
 outputln("Hello, World!");
 ```
 
+---
+
 ## 2. Beginner Syntax
 
 ### 2.1 Comments
 
-Lift uses triple hyphens (`---`) to wrap both single-line and multi-line comments:
+Lift uses triple hyphens (`---`) for single-line and multi-line comments:
 
 ```lift
---- This is a single-line comment ---
+--- this is a comment ---
 
 ---
-This is a multi-line comment.
-It can span across multiple lines.
+this is also a comment
 ---
 ```
 
@@ -129,6 +132,8 @@ outputln("Hello, ", name);
 
 * **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division)
 * **Relational:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+
+---
 
 ## 3. Intermediate Syntax
 
@@ -223,7 +228,7 @@ if score >= 90 {
 #### Logical Operators
 
 | Operator | Keyword / Logic | Description |
-| --- | --- | --- |
+|---|---|---|
 | `&&` | AND | Returns `true` if both operands are `true` |
 | `\|\|` | OR | Returns `true` if at least one operand is `true` |
 | `^^` | XOR | Returns `true` if exactly one operand is `true` |
@@ -250,17 +255,17 @@ if a ^^ b {
 Lists store ordered sequences of a single data type. Elements are zero-indexed (`0` to `length - 1`).
 
 ```lift
---- Declaration ---
-var<list<int>> nums = [1, 2, 3];
+--- List declaration ---
+list<int> nums = [1, 2, 3];
 
---- Accessing and modifying elements ---
+--- Accessing and modifying elements via index ---
 outputln("First element: ", nums[0]); --- Output: 1 ---
 nums[1] = 20;                        --- Updates second element to 20 ---
 
 --- Common List Methods ---
 nums.append(4);                 --- Appends element to the end -> [1, 20, 3, 4] ---
-nums.insert(0, 99);             --- Inserts element at specific index ---
-nums.remove(2);                 --- Removes element at specific index ---
+nums.insert(0, 99);             --- Inserts element at specified index ---
+nums.remove(2);                 --- Removes element at specified index ---
 var<int> len = nums.length();   --- Returns list size ---
 nums.clear();                   --- Removes all elements from list ---
 ```
