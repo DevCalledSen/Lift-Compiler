@@ -3,6 +3,7 @@
 > **Simple to learn. Powerful when you need it.**
 
 ---
+
 **Compiler Version:** `v0.1.0`
 ---
 
@@ -130,8 +131,8 @@ outputln("Hello, ", name);
 
 ### 2.7 Operators
 
-* **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division)
-* **Relational:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+- **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division)
+- **Relational:** `==`, `!=`, `>`, `<`, `>=`, `<=`
 
 ---
 
@@ -184,9 +185,9 @@ fn<void> executeTask() {}
 
 Lift provides three fundamental iteration structures:
 
-* **`for` loop:** C-style counter loop without parentheses around the conditions.
-* **`while` loop:** Executes repeatedly while the condition evaluates to `true`.
-* **`until` loop:** Executes repeatedly until the condition evaluates to `true` (executes while `false`).
+- **`for` loop:** C-style counter loop without parentheses around the conditions.
+- **`while` loop:** Executes repeatedly while the condition evaluates to `true`.
+- **`until` loop:** Executes repeatedly until the condition evaluates to `true` (executes while `false`).
 
 ```lift
 --- Standard For loop ---
@@ -227,15 +228,15 @@ if score >= 90 {
 
 #### Logical Operators
 
-| Operator | Keyword / Logic | Description |
-|---|---|---|
-| `&&` | AND | Returns `true` if both operands are `true` |
-| `\|\|` | OR | Returns `true` if at least one operand is `true` |
-| `^^` | XOR | Returns `true` if exactly one operand is `true` |
-| `!` | NOT | Inverts the boolean value |
-| `!&` | NAND | Returns `false` only if both operands are `true` |
-| `!\|` | NOR | Returns `true` only if both operands are `false` |
-| `!^` | XNOR | Returns `true` if both operands are equal |
+| Operator | Keyword / Logic | Description                                      |
+| -------- | --------------- | ------------------------------------------------ |
+| `&&`     | AND             | Returns `true` if both operands are `true`       |
+| `\|\|`   | OR              | Returns `true` if at least one operand is `true` |
+| `^^`     | XOR             | Returns `true` if exactly one operand is `true`  |
+| `!`      | NOT             | Inverts the boolean value                        |
+| `!&`     | NAND            | Returns `false` only if both operands are `true` |
+| `!\|`    | NOR             | Returns `true` only if both operands are `false` |
+| `!^`     | XNOR            | Returns `true` if both operands are equal        |
 
 ```lift
 var<bool> a = true;
@@ -515,8 +516,9 @@ fn<void> main() {
 ### 5.3 Pointers
 
 Pointers store physical memory addresses using the `ptr<type>` notation.
-* Initialize a null pointer using `NULL`.
-* Use `ptr<void>` as a generic pointer type that can hold an address of any data type.
+
+- Initialize a null pointer using `NULL`.
+- Use `ptr<void>` as a generic pointer type that can hold an address of any data type.
 
 ```lift
 var<int> target = 42;
@@ -581,8 +583,8 @@ freeRaw(rawChunk);
 
 ### 5.7 Stack and Heap
 
-* **Stack Memory:** Fast, automatically managed, fixed-size frames for local variables and function scope lifetime.
-* **Heap Memory:** Dynamically allocated memory that persists until explicitly released or cleared by manual/garbage-managed scope lifecycle.
+- **Stack Memory:** Fast, automatically managed, fixed-size frames for local variables and function scope lifetime.
+- **Heap Memory:** Dynamically allocated memory that persists until explicitly released or cleared by manual/garbage-managed scope lifecycle.
 
 ```lift
 fn<void> memoryDemo() {
@@ -598,14 +600,14 @@ fn<void> memoryDemo() {
 
 Lift supports standard low-level bit manipulation operators:
 
-| Operator | Operation | Description |
-|---|---|---|
-| `&` | Bitwise AND | Compares corresponding bits |
-| `\|` | Bitwise OR | Sets bit if either bit is 1 |
-| `^` | Bitwise XOR | Sets bit if exactly one bit is 1 |
-| `~` | Bitwise NOT | Inverts all bits |
-| `<<` | Left Shift | Shifts bits left (multiplies by $2^n$) |
-| `>>` | Right Shift | Shifts bits right (divides by $2^n$) |
+| Operator | Operation   | Description                            |
+| -------- | ----------- | -------------------------------------- |
+| `&`      | Bitwise AND | Compares corresponding bits            |
+| `\|`     | Bitwise OR  | Sets bit if either bit is 1            |
+| `^`      | Bitwise XOR | Sets bit if exactly one bit is 1       |
+| `~`      | Bitwise NOT | Inverts all bits                       |
+| `<<`     | Left Shift  | Shifts bits left (multiplies by $2^n$) |
+| `>>`     | Right Shift | Shifts bits right (divides by $2^n$)   |
 
 ```lift
 var<uint> flags = 0b00001100;
