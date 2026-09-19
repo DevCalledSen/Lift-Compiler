@@ -380,7 +380,7 @@ fn<T> identity<T>(var<T> val) {
 
 --- Usage ---
 --- Instantiate a Container storing an integer ---
-var<Container<int>> box;
+container<int> box;
 box.item = 42;
 outputln("Box value: ", box.getItem());
 
