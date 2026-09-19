@@ -2,9 +2,7 @@
 
 enum class TokenType {
 
-  // =========================
   // Keywords
-  // =========================
 
   kw_fn,
   kw_output,
@@ -63,9 +61,7 @@ enum class TokenType {
   kw_asm,
   kw_extern,
 
-  // =========================
   // Built-in Types
-  // =========================
 
   t_int,
 
@@ -92,32 +88,24 @@ enum class TokenType {
   t_bool,
   t_void,
 
-  // =========================
   // Boolean / Null Literals
-  // =========================
 
   literal_true,
   literal_false,
   literal_null,
 
-  // =========================
   // Literals
-  // =========================
 
   literal_integer,
   literal_float,
   literal_char,
   literal_string,
 
-  // =========================
   // Identifiers
-  // =========================
 
   identifier,
 
-  // =========================
   // Arithmetic Operators
-  // =========================
 
   plus,        // +
   minus,       // -
@@ -128,9 +116,7 @@ enum class TokenType {
 
   doublestar, // **
 
-  // =========================
   // Assignment Operators
-  // =========================
 
   assignment,       // =
   plusequal,        // +=
@@ -141,16 +127,12 @@ enum class TokenType {
   moduloequal,      // %=
   doublestarequal,  // **=
 
-  // =========================
   // Increment / Decrement
-  // =========================
 
   doubleplus,  // ++
   doubleminus, // --
 
-  // =========================
   // Comparison Operators
-  // =========================
 
   equal,    // ==
   notequal, // !=
@@ -161,9 +143,7 @@ enum class TokenType {
   less,      // <
   lessequal, // <=
 
-  // =========================
   // Logical Operators
-  // =========================
 
   logical_and,  // &&
   logical_or,   // ||
@@ -173,9 +153,7 @@ enum class TokenType {
   logical_nor,  // !|
   logical_xnor, // !^
 
-  // =========================
   // Bitwise Operators
-  // =========================
 
   bit_and, // &
   bit_or,  // |
@@ -192,15 +170,11 @@ enum class TokenType {
   leftshiftequal,  // <<=
   rightshiftequal, // >>=
 
-  // =========================
   // References / Pointers
-  // =========================
 
   reference, // &
 
-  // =========================
   // Punctuation
-  // =========================
 
   semicolon, // ;
   dot,       // .
@@ -216,9 +190,7 @@ enum class TokenType {
   lbrack, // [
   rbrack, // ]
 
-  // =========================
   // Special Tokens
-  // =========================
 
   eof,
   unknown
