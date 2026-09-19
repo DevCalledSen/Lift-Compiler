@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstddef>
+#include <string>
+
 enum class TokenType {
 
   // Keywords
@@ -195,3 +198,11 @@ enum class TokenType {
   eof,
   unknown
 };
+
+struct Token {
+  TokenType type;
+  std::string lexeme;
+
+  std::size_t line;
+  std::size_t column;
+}
