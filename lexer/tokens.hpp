@@ -2,4 +2,4 @@
 
 enum class TokenType {
 
-}
+};
