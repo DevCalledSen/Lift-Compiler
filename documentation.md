@@ -75,6 +75,7 @@ Lift uses triple hyphens (`---`) for single-line and multi-line comments:
 
 ---
 this is also a comment
+spanning across multiple lines
 ---
 ```
 
@@ -131,7 +132,7 @@ outputln("Hello, ", name);
 
 ### 2.7 Operators
 
-- **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division)
+- **Arithmetic:** `+`, `-`, `*`, `/`, `//` (integer division), `%` (modulo)
 - **Relational:** `==`, `!=`, `>`, `<`, `>=`, `<=`
 
 ---
@@ -287,7 +288,7 @@ var<string> sub = greeting.substring(0, 5);       --- Returns "Hello" ---
 var<string> upper = greeting.toUpper();           --- Converts to uppercase ---
 var<string> lower = greeting.toLower();           --- Converts to lowercase ---
 var<bool> contains = greeting.contains("Lift");   --- Returns true ---
-var<list<string>> parts = greeting.split(", ");   --- Returns ["Hello", "Lift!"] ---
+list<string> parts = greeting.split(", ");   --- Returns ["Hello", "Lift!"] ---
 ```
 
 ---
@@ -317,7 +318,7 @@ public:
 
 private:
     var<int> id;
-}
+};
 
 --- Usage ---
 var<Player> p1;
@@ -336,7 +337,7 @@ enum State {
     IDLE,
     RUNNING,
     PAUSED
-}
+};
 
 --- Scoped enum class ---
 enum class Direction {
@@ -344,7 +345,7 @@ enum class Direction {
     SOUTH,
     EAST,
     WEST
-}
+};
 
 --- Usage ---
 var<State> currentState = State.IDLE;
@@ -353,10 +354,13 @@ var<Direction> dir = Direction.NORTH;
 
 ### 4.3 Generics
 
-Generics allow functions and data structures to operate on parametrized types:
+Generics allow functions and structs to operate over type parameters. Placeholders like `<T>` act as generic types that are replaced with concrete data types at compile time.
 
 ```lift
---- Generic Struct ---
+---
+Generic Struct: <T> acts as a placeholder type for struct members.
+When instantiated (e.g., Container<int>), 'T' becomes 'int'.
+---
 struct Container<T> {
 public:
     var<T> item;
@@ -366,36 +370,57 @@ public:
     }
 }
 
---- Generic Function ---
+---
+Generic Function: Accepts an argument of type T and returns a value of type T.
+The type parameter <T> can be inferred or explicitly specified during call.
+---
 fn<T> identity<T>(var<T> val) {
     return val;
 }
 
 --- Usage ---
+--- Instantiate a Container storing an integer ---
 var<Container<int>> box;
 box.item = 42;
+outputln("Box value: ", box.getItem());
+
+--- Call generic function explicitly providing the 'string' type ---
 outputln(identity<string>("Generic test"));
 ```
 
 ### 4.4 Advanced Collections
 
-In addition to standard lists, Lift offers built-in key-value maps and unique sets:
+Lift provides specialized data structures for associative lookup and uniqueness guarantees.
 
 ```lift
---- Hash Map / Dictionary ---
+---
+Hash Map / Dictionary: Stores associative key-value pairs (map<KeyType, ValueType>).
+Keys are unique. Values are accessed using keys instead of numerical indices.
+---
 map<string, int> scores;
+
+--- Assign key-value pairs using .set(key, value) ---
 scores.set("Alice", 100);
 scores.set("Bob", 85);
 
+--- Safely verify if key exists using .has(key) before calling .get(key) ---
 if scores.has("Alice") {
     outputln("Alice's score: ", scores.get("Alice"));
 }
 
---- Unique Set ---
+---
+Unique Set: Stores an unordered collection of unique values (set<Type>).
+Duplicate items inserted into a set are automatically discarded.
+---
 set<int> uniqueIds;
+
+--- Inserting elements into set ---
 uniqueIds.add(10);
-uniqueIds.add(10); --- Ignored as duplicate ---
-outputln("Unique count: ", uniqueIds.length());
+uniqueIds.add(10); --- Discarded automatically as duplicate ---
+uniqueIds.add(20);
+
+--- Retrieve total unique item count using .length() ---
+outputln("Unique count: ", uniqueIds.length()); --- Output: 2 ---
 ```
 
 ### 4.5 Function Overloading
@@ -418,13 +443,14 @@ fn<int> calculate(var<int> a, var<int> b, var<int> c) {
 
 ### 4.6 Function References / Callbacks
 
-Functions can be passed as arguments or assigned to typed callback variables:
+Functions can be passed as arguments or assigned to typed callback variables using the `fn<ReturnType(ParameterTypes)>` notation:
 
 ```lift
 fn<int> multiplyByTwo(var<int> n) {
     return n * 2;
 }
 
+--- Parameter 'callback' is typed to expect any function taking an 'int' and returning an 'int' ---
 fn<void> processNumber(var<int> val, fn<int(int)> callback) {
     var<int> result = callback(val);
     outputln("Processed result: ", result);
@@ -495,7 +521,38 @@ comptime {
 
 ### 5.1 Memory Architecture
 
-Lift offers direct control over system memory for performance-critical systems. Memory addresses are represented as typed pointer locations or raw address offsets.
+Lift offers direct control over system memory for performance-critical systems. Every variable stored in system RAM has a physical or virtual memory address represented as a hexadecimal integer (e.g., `0x7ffd5b3a48bc`).
+
+#### How Memory Addresses Work
+
+- **Stack Addresses:** Local variables within functions live on the stack. Stack addresses usually sit in higher memory regions.
+- **Heap Addresses:** Dynamically allocated memory via `allocate<T>()` lives on the heap, typically residing in lower memory regions.
+- **Address Representation:** Pointers natively output as 64-bit hexadecimal strings prefixed with `0x`. You can also convert pointers to numeric address representations using `.toAddress()`.
+
+```lift
+fn<void> main() {
+    var<int> stackVal = 42;
+
+    --- Obtain stack variable address using '&' ---
+    ptr<int> stackPtr = &stackVal;
+
+    outputln("Value of stackVal: ", stackVal);           --- Output: 42 ---
+    outputln("Address of stackVal: ", stackPtr);         --- Output: 0x7ffd5b3a48bc ---
+
+    --- Heap memory allocation address ---
+    ptr<int> heapPtr = allocate<int>(1);
+    *heapPtr = 100;
+
+    outputln("Value on heap: ", *heapPtr);               --- Output: 100 ---
+    outputln("Address on heap: ", heapPtr);              --- Output: 0x55a1b2c3d010 ---
+
+    --- Extract numeric memory offset (unsigned integer address) ---
+    var<uint> numericAddr = stackPtr.toAddress();
+    outputln("Numeric Address: ", numericAddr);          --- Output: 140726143043772 ---
+
+    deallocate(heapPtr);
+}
+```
 
 ### 5.2 References
 
@@ -571,14 +628,16 @@ Generic raw byte operations allow direct byte manipulation via `ptr<void>`:
 
 ```lift
 ptr<void> rawChunk = allocateRaw(64); --- Reserve 64 raw bytes ---
+ptr<void> destRaw  = allocateRaw(64); --- Reserve destination byte block ---
 
---- Copy memory bytes from source to target ---
+--- Copy memory bytes from source (rawChunk) to target (destRaw) ---
 memcopy(destRaw, rawChunk, 64);
 
 --- Fill memory region with zero bytes ---
 memset(rawChunk, 0, 64);
 
 freeRaw(rawChunk);
+freeRaw(destRaw);
 ```
 
 ### 5.7 Stack and Heap
@@ -588,7 +647,7 @@ freeRaw(rawChunk);
 
 ```lift
 fn<void> memoryDemo() {
-    var<int> stackVar = 5; --- Stack allocation ---
+    var<int> stackVar = 5;               --- Stack allocation ---
     ptr<int> heapVar = allocate<int>(1); --- Heap allocation ---
     *heapVar = 50;
 
@@ -603,7 +662,7 @@ Lift supports standard low-level bit manipulation operators:
 | Operator | Operation   | Description                            |
 | -------- | ----------- | -------------------------------------- |
 | `&`      | Bitwise AND | Compares corresponding bits            |
-| `\|`     | Bitwise OR  | Sets bit if either bit is 1            |
+| `\|`     | Bitwise OR  | Sets bit if at least one bit is 1      |
 | `^`      | Bitwise XOR | Sets bit if exactly one bit is 1       |
 | `~`      | Bitwise NOT | Inverts all bits                       |
 | `<<`     | Left Shift  | Shifts bits left (multiplies by $2^n$) |
@@ -620,32 +679,44 @@ var<uint> shifted = flags << 2;          --- Bitwise Left Shift ---
 
 ### 5.9 Inline Assembly
 
-Low-level target platform instructions can be written directly using `asm` blocks:
+Lift allows embedding native assembly language instructions directly inside an `asm` block for direct hardware access, low-level optimization, or CPU-specific register operations:
 
 ```lift
+---
+Inline Assembly: Executes architecture-specific processor instructions.
+Useful for CPU cycle counting, custom hardware interrupts, or ultra-fast operations.
+---
 fn<uint> readCycleCount() {
     var<uint> cycles = 0;
+
     asm {
-        rdtsc
-        mov cycles, eax
+        rdtsc           --- Read Time-Stamp Counter instruction (x86 CPU cycle counter) ---
+        mov cycles, eax --- Copy lower 32-bits of EDX:EAX cycle count into Lift variable 'cycles' ---
     }
+
     return cycles;
 }
 ```
 
 ### 5.10 C / Native Interoperability
 
-Foreign native functions compiled from C/C++ libraries can be declared using `extern "C"`:
+Lift programs can interface directly with pre-compiled C libraries and C system headers using the `extern "C"` block. This allows function bindings without C++ symbol name mangling:
 
 ```lift
---- Bind external C runtime functions ---
+---
+C Interoperability: Declares foreign functions compiled in external C/C++ libraries (.dll or .so).
+Functions declared inside extern "C" have no body in Lift—their implementation is linked at compile time.
+---
 extern "C" {
-    fn<int> puts(ptr<char> str);
-    fn<int> abs(var<int> value);
+    fn<int> puts(ptr<char> str);   --- Binds directly to C standard library 'puts' function ---
+    fn<int> abs(var<int> value);   --- Binds directly to C standard library 'abs' function ---
 }
 
 fn<void> main() {
-    abs(-15);
-    puts("Calling C library directly from Lift!");
+    --- Call C functions seamlessly as native Lift functions ---
+    var<int> absoluteVal = abs(-15);
+    outputln("Absolute value from C abs(): ", absoluteVal);
+
+    puts("Calling C libc puts() function directly from Lift!");
 }
 ```
