@@ -205,4 +205,4 @@ struct Token {
 
   std::size_t line;
   std::size_t column;
-}
+};
