@@ -94,3 +94,17 @@ Token Lexer::readIdentifier() {
   }
   return Token{TokenType::identifier, identifier, sLine, sColumn};
 }
+
+Token Lexer::readString() {
+  char c = peek();
+  std::size_t sLine = line;
+  std::size_t sColumn = column;
+  std::string str = "";
+  advance();
+  while (c != '"' || c != '\0') {
+    str += c;
+    c = advance();
+  }
+  advance();
+  return Token{TokenType::literal_string, str, sLine, sColumn};
+}
