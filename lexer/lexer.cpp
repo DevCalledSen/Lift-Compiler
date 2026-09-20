@@ -108,3 +108,15 @@ Token Lexer::readString() {
   advance();
   return Token{TokenType::literal_string, str, sLine, sColumn};
 }
+
+Token Lexer::readChar() {
+  char c = peek();
+  std::size_t sLine = line;
+  std::size_t sColumn = column;
+  std::string cha = "";
+  advance();
+  cha += c;
+  advance();
+  advance();
+  return Token{TokenType::literal_char, cha, sLine, sColumn};
+}
