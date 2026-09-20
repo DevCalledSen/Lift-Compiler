@@ -1,4 +1,5 @@
 #include "lexer.hpp"
+#include <cctype>
 
 Lexer::Lexer(const std::string &source)
     : source(source), position(0), line(1), column(1) {}
@@ -59,4 +60,25 @@ void Lexer::skipComment() {
       advance();
     }
   }
+}
+
+Token Lexer::readNumber() {
+  char c = current();
+  std::size_t sLine = line;
+  std::size_t sColumn = column;
+  std::string number = "";
+  while (std::isdigit(c)) {
+    number += c;
+    c = advance();
+  }
+  if (c == '.') {
+    number += '.';
+    c = advance();
+    while (std::isdigit(c)) {
+      number += c;
+      c = advance();
+    }
+    return Token{TokenType::literal_float, number, sLine, sColumn};
+  }
+  return Token{TokenType::literal_integer, number, sLine, sColumn};
 }
