@@ -101,7 +101,7 @@ Token Lexer::readString() {
   std::size_t sColumn = column;
   std::string str = "";
   advance();
-  while (c != '"' || c != '\0') {
+  while (c != '"' && c != '\0') {
     str += c;
     c = advance();
   }
