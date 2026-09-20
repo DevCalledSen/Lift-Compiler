@@ -120,3 +120,21 @@ Token Lexer::readChar() {
   advance();
   return Token{TokenType::literal_char, cha, sLine, sColumn};
 }
+
+Token Lexer::nextToken() {
+  skipWhitespace();
+  skipComment();
+  char c = current();
+  if (c != '\0') {
+    if (c == '"') {
+      return readString();
+    } else if (c == '\'') {
+      return readChar();
+    } else if (std::isdigit(c)) {
+      return readNumber();
+    } else {
+      return readIdentifier();
+    }
+  }
+  return Token{TokenType::eof, "eof", line, column};
+}
