@@ -82,3 +82,15 @@ Token Lexer::readNumber() {
   }
   return Token{TokenType::literal_integer, number, sLine, sColumn};
 }
+
+Token Lexer::readIdentifier() {
+  char c = current();
+  std::size_t sLine = line;
+  std::size_t sColumn = column;
+  std::string identifier = "";
+  while (std::isalnum(c) || c == '_') {
+    identifier += c;
+    c = advance();
+  }
+  return Token{TokenType::identifier, identifier, sLine, sColumn};
+}
